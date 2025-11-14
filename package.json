@@ -1,0 +1,28 @@
+{
+  "name": "timetable-management-messaging-backend",
+  "version": "1.0.0",
+  "description": "Backend server for sending SMS and WhatsApp messages via Twilio",
+  "main": "backend-messaging-server.js",
+  "scripts": {
+    "start": "node backend-messaging-server.js",
+    "dev": "nodemon backend-messaging-server.js"
+  },
+  "keywords": [
+    "twilio",
+    "sms",
+    "whatsapp",
+    "messaging"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "twilio": "^3.83.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

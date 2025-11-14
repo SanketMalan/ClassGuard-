@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth - ClassGuard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles-modern.css" />
+    <style>
+      /* small tweaks for combined auth layout */
+      .auth-box {
+        max-width: 820px;
+        margin: 48px auto;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .auth-left,
+      .auth-right {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+      .auth-left {
+        flex: 1;
+      }
+      .auth-right {
+        width: 360px;
+      }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .tabs button {
+        padding: 8px 14px;
+        border-radius: 6px;
+        border: 1px solid #e6e6e6;
+        background: #fff;
+        cursor: pointer;
+      }
+      .tabs button.active {
+        background: #667eea;
+        color: #fff;
+        border-color: #667eea;
+      }
+      .hidden {
+        display: none;
+      }
+      .role-select {
+        margin-bottom: 12px;
+      }
+      .role-select select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+      }
+      .role-select label {
+        display: block;
+        margin-bottom: 6px;
+        color: #555;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .form-hint {
+        background: #f0f4ff;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 16px;
+        font-size: 0.9rem;
+        color: #555;
+        border-left: 4px solid #667eea;
+      }
+      .form-hint strong {
+        color: #333;
+      }
+      .input-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        background: white;
+      }
+      .input-group select:focus {
+        border-color: #667eea;
+        outline: none;
+      }
+      .password-requirement {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="auth-box">
+        <div class="auth-left">
+          <h1>ClassGuard</h1>
+          <p class="small" style="color: #666">
+            Sign in to your account — choose your user type below.
+          </p>
+
+          <div
+            style="
+              background: #fff3cd;
+              border: 2px solid #ff6b6b;
+              border-radius: 8px;
+              padding: 12px;
+              margin-bottom: 16px;
+              text-align: center;
+            "
+          >
+            <strong style="color: #ff6b6b">⚡ New User?</strong><br />
+            <p style="margin: 8px 0 0 0; font-size: 0.9rem; color: #333">
+              Go to
+              <a
+                href="register.html"
+                style="color: #ff6b6b; font-weight: bold; text-decoration: none"
+                >register.html</a
+              >
+              to create an account!
+            </p>
+          </div>
+
+          <!-- LOGIN ONLY -->
+          <div id="panel-login">
+            <div class="role-select">
+              <label for="login-role">I am a</label>
+              <select id="login-role">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+              </select>
+            </div>
+
+            <!-- Student login form (keeps original IDs so existing JS attaches) -->
+            <div id="login-student-panel">
+              <form id="student-login-form">
+                <div class="input-group">
+                  <label for="s-username">Username</label>
+                  <input id="s-username" type="text" required />
+                </div>
+                <div class="input-group">
+                  <label for="s-password">Password</label>
+                  <input id="s-password" type="password" required />
+                </div>
+                <button type="submit" class="login-btn">
+                  Login as Student
+                </button>
+              </form>
+            </div>
+
+            <!-- Teacher login form -->
+            <div id="login-teacher-panel" class="hidden">
+              <form id="teacher-login-form">
+                <div class="input-group">
+                  <label for="t-username">Username</label>
+                  <input id="t-username" type="text" required />
+                </div>
+                <div class="input-group">
+                  <label for="t-password">Password</label>
+                  <input id="t-password" type="password" required />
+                </div>
+                <button type="submit" class="login-btn">
+                  Login as Teacher
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-right">
+          <h3>Quick Links</h3>
+          <div style="margin-bottom: 12px">
+            <img
+              src="https://media.istockphoto.com/id/1182304971/vector/planner-schedule-calendar-time-timetable-concept-vector-flat-graphic-design-illustration.jpg?s=612x612&w=0&k=20&c=EGykM8sGj_QRCELjZILmrh5kPVQVO_QCQzivVJYxXVM="
+              alt="Timetable Illustration"
+              style="
+                width: 100%;
+                max-width: 320px;
+                height: auto;
+                display: block;
+                margin-bottom: 8px;
+                border-radius: 8px;
+              "
+            />
+          </div>
+          <p><a href="about.html">About</a></p>
+          <p><a href="register.html">Register</a></p>
+          <p><a href="choose-login.html">Choose Login</a></p>
+          <p style="color: #666; font-size: 0.9rem">
+            <strong>💡 How to Use:</strong><br />
+            1️⃣ Select Student or Teacher<br />
+            2️⃣ Enter Username<br />
+            3️⃣ Enter Password<br />
+            4️⃣ Hit Login button<br />
+            5️⃣ Access your dashboard!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- include the existing auth scripts so they attach to forms by ID -->
+    <script src="student-auth.js"></script>
+    <script src="teacher-auth.js"></script>
+
+    <script>
+      // Role toggle logic for login only
+      function showRole(role) {
+        document
+          .getElementById("login-student-panel")
+          .classList.toggle("hidden", role !== "student");
+        document
+          .getElementById("login-teacher-panel")
+          .classList.toggle("hidden", role !== "teacher");
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // role selector
+        const loginRole = document.getElementById("login-role");
+        loginRole.addEventListener("change", function () {
+          showRole(this.value);
+        });
+
+        // parse initial hash: #student | #teacher
+        const h = (location.hash || "").replace("#", "");
+        let initialRole = "student";
+        if (h === "teacher" || h === "student") {
+          initialRole = h;
+        }
+        loginRole.value = initialRole;
+        showRole(initialRole);
+      });
+    </script>
+  </body>
+</html>

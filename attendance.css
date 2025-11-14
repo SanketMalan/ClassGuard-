@@ -1,0 +1,152 @@
+/* attendance.css */
+.attendance-container {
+  padding: 0;
+}
+
+.attendance-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.attendance-header input,
+.attendance-header select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+.attendance-header button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #667eea;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.attendance-header button:hover {
+  background: #5568d3;
+}
+
+.attendance-list {
+  margin-top: 12px;
+}
+
+.attendance-row {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  gap: 12px;
+  background: #f9f9f9;
+}
+
+.attendance-row .student-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.attendance-row .student-username {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.attendance-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.attendance-toggle button {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.attendance-toggle button.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.attendance-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.stat-card {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.stat-card .stat-label {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.attendance-history {
+  margin-top: 16px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.history-table thead {
+  background: #f0f0f0;
+}
+
+.history-table th,
+.history-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.history-table th {
+  font-weight: 600;
+  color: #333;
+}
+
+.history-table tr:hover {
+  background: #f9f9f9;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-badge.present {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.absent {
+  background: #f8d7da;
+  color: #721c24;
+}

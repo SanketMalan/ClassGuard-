@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Dashboard - ClassGuard</title>
+    <link rel="stylesheet" href="styles-about.css" />
+    <link rel="stylesheet" href="attendance.css" />
+    <link rel="stylesheet" href="styles-modern.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-brand">ClassGuard</div>
+      <div class="nav-links">
+        <a href="about.html">About</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+    </nav>
+
+    <header class="hero" style="height: 30vh">
+      <div class="hero-content">
+        <h1>Student Dashboard</h1>
+        <p id="welcome" style="font-size: 1.1rem; opacity: 0.9"></p>
+      </div>
+    </header>
+
+    <main style="padding: 2rem">
+      <section>
+        <h2>Your Timetable</h2>
+        <p>
+          This is a simple student view. Teachers assign schedules in the
+          scheduling area.
+        </p>
+        <p>
+          If you want a live view of your class timetable, your account should
+          include a class value during registration and the system must assign
+          timetables. For demo, a teacher-generated timetable is accessible only
+          to teachers.
+        </p>
+        <div style="margin-top: 1.5rem">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <h3 id="class-title">Class Timetable</h3>
+            <button
+              id="refresh-timetable"
+              style="
+                padding: 6px 10px;
+                border-radius: 6px;
+                border: 1px solid #ddd;
+                cursor: pointer;
+              "
+            >
+              Refresh
+            </button>
+          </div>
+          <div
+            id="student-timetable"
+            style="margin-top: 12px; overflow: auto"
+          ></div>
+          <div
+            id="timetable-note"
+            style="color: #666; margin-top: 8px; font-size: 0.95rem"
+          ></div>
+        </div>
+      </section>
+
+      <section style="margin-top: 2rem">
+        <h2>Your Attendance</h2>
+        <div
+          id="attendance-stats"
+          class="attendance-stats"
+          style="margin-top: 12px"
+        >
+          <!-- Attendance stats will be inserted here -->
+        </div>
+        <div id="attendance-history" class="attendance-history">
+          <!-- Attendance history will be inserted here -->
+        </div>
+      </section>
+    </main>
+
+    <footer
+      style="margin-top: 2rem; padding: 1rem; text-align: center; color: #666"
+    >
+      &copy; 2025 ClassGuard
+    </footer>
+
+    <script>
+      // keep last known generated time so we can detect updates
+      let lastGeneratedAt = null;
+      let studentClassGlobal = null;
+
+      function renderTimetableForClass(className, timetableObj) {
+        const container = document.getElementById("student-timetable");
+        container.innerHTML = "";
+        if (!timetableObj || !timetableObj.timetable) {
+          container.innerHTML =
+            '<div style="color:#666">No timetable generated yet.</div>';
+          return;
+        }
+
+        const timetable = timetableObj.timetable;
+        const meta = timetableObj.meta || {};
+
+        const classSchedule = timetable[className];
+        if (!classSchedule) {
+          container.innerHTML = `<div style="color:#666">No timetable found for class <strong>${className}</strong>.</div>`;
+          return;
+        }
+
+        // Use meta.globalPeriods if available or derive from classSchedule
+        let periods =
+          meta.globalPeriods && meta.globalPeriods.length > 0
+            ? meta.globalPeriods.slice()
+            : [];
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        if (periods.length === 0) {
+          const firstDay =
+            days.find(
+              (d) =>
+                classSchedule[d] && Object.keys(classSchedule[d]).length > 0
+            ) || days[0];
+          periods = Object.keys(classSchedule[firstDay] || {});
+        }
+
+        // build table
+        const table = document.createElement("table");
+        table.className = "timetable";
+        table.style.width = "100%";
+        table.style.borderCollapse = "collapse";
+        table.style.marginTop = "8px";
+
+        // header
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        headerRow.innerHTML =
+          `<th style="border:1px solid #ddd;padding:8px;background:#f8f9fa">Time/Day</th>` +
+          days
+            .map(
+              (d) =>
+                `<th style="border:1px solid #ddd;padding:8px;background:#f8f9fa">${d}</th>`
+            )
+            .join("");
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        periods.forEach((period) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML =
+            `<th style="border:1px solid #ddd;padding:8px;background:#f8f9fa;text-align:left">${period}</th>` +
+            days
+              .map((day) => {
+                const cell =
+                  classSchedule[day] && classSchedule[day][period]
+                    ? classSchedule[day][period]
+                    : { subject: "Free", teacher: "N/A", room: "N/A" };
+                return `<td style="border:1px solid #ddd;padding:8px;text-align:left"><div><strong>${cell.subject}</strong></div><div style="color:#666;font-size:0.95rem">${cell.teacher} • Room ${cell.room}</div></td>`;
+              })
+              .join("");
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        container.appendChild(table);
+
+        const note = document.getElementById("timetable-note");
+        note.textContent = meta.generatedBy
+          ? `Generated by ${meta.generatedBy} on ${new Date(
+              meta.generatedAt
+            ).toLocaleString()}`
+          : "";
+      }
+
+      function loadAndRender() {
+        const username = localStorage.getItem("username") || "Student";
+        document.getElementById("welcome").textContent = `Welcome, ${username}`;
+
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const role = localStorage.getItem("role");
+        if (!isLoggedIn || role !== "student") {
+          window.location.href = "choose-login.html";
+          return;
+        }
+
+        // get student record to find class
+        const students = JSON.parse(
+          localStorage.getItem("studentsRegistered") || "[]"
+        );
+        const student = students.find((s) => s.username === username);
+        const studentClass = student ? student.class : null;
+        studentClassGlobal = studentClass;
+        document.getElementById("class-title").textContent = studentClass
+          ? `Class Timetable — ${studentClass}`
+          : "Class Timetable";
+
+        if (!studentClass) {
+          document.getElementById("student-timetable").innerHTML =
+            '<div style="color:#666">Your account does not include a class. Please update your profile or ask an administrator to assign your class.</div>';
+          return;
+        }
+
+        const generated = JSON.parse(
+          localStorage.getItem("generatedTimetable") || "null"
+        );
+
+        if (!generated) {
+          document.getElementById("student-timetable").innerHTML =
+            '<div style="color:#666">No timetable has been generated yet. Please check back later.</div>';
+          lastGeneratedAt = null;
+          return;
+        }
+
+        // record lastGeneratedAt and render
+        lastGeneratedAt =
+          generated.meta && generated.meta.generatedAt
+            ? generated.meta.generatedAt
+            : null;
+        renderTimetableForClass(studentClass, generated);
+      }
+
+      // React to storage events fired in other tabs/windows
+      window.addEventListener("storage", function (e) {
+        if (e.key === "generatedTimetable") {
+          try {
+            const newVal = e.newValue ? JSON.parse(e.newValue) : null;
+            const newAt =
+              newVal && newVal.meta ? newVal.meta.generatedAt : null;
+            if (newAt && newAt !== lastGeneratedAt) {
+              // if we know the student's class, re-render
+              const cls = studentClassGlobal;
+              if (cls) renderTimetableForClass(cls, newVal);
+              lastGeneratedAt = newAt;
+            }
+          } catch (err) {
+            console.warn("Error parsing generatedTimetable storage event", err);
+          }
+        }
+      });
+
+      // Polling fallback: check every 5 seconds for updates (catches same-tab changes and some browser cases)
+      setInterval(function () {
+        const generated = JSON.parse(
+          localStorage.getItem("generatedTimetable") || "null"
+        );
+        const newAt =
+          generated && generated.meta ? generated.meta.generatedAt : null;
+        if (newAt && newAt !== lastGeneratedAt) {
+          if (studentClassGlobal)
+            renderTimetableForClass(studentClassGlobal, generated);
+          lastGeneratedAt = newAt;
+        }
+      }, 5000);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadAndRender();
+        document
+          .getElementById("refresh-timetable")
+          .addEventListener("click", () => loadAndRender());
+        renderAttendance();
+      });
+    </script>
+    <script src="attendance.js"></script>
+    <link rel="stylesheet" href="chatbot.css" />
+    <script src="chatbot.js" defer></script>
+    <script>
+      function renderAttendance() {
+        const username = localStorage.getItem("username") || "";
+        if (!username) return;
+
+        const stats = Attendance.getStudentStats(username);
+        const records = Attendance.getStudentAttendance(username);
+
+        // Render stats
+        const statsContainer = document.getElementById("attendance-stats");
+        statsContainer.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-value">${stats.total}</div>
+            <div class="stat-label">Total Days</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#28a745">${stats.present}</div>
+            <div class="stat-label">Present</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#dc3545">${stats.absent}</div>
+            <div class="stat-label">Absent</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#667eea">${stats.percentage}%</div>
+            <div class="stat-label">Attendance %</div>
+          </div>
+        `;
+
+        // Render history table
+        const historyContainer = document.getElementById("attendance-history");
+        if (records.length === 0) {
+          historyContainer.innerHTML =
+            '<p style="color:#666; margin-top:8px">No attendance records yet.</p>';
+          return;
+        }
+
+        // Sort by date descending
+        const sorted = records.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+
+        let html = `<h3 style="margin-top:12px">Attendance History</h3>
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Class</th>
+                <th>Status</th>
+                <th>Marked By</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+        sorted.forEach((record) => {
+          const dateObj = new Date(record.date);
+          const formattedDate = dateObj.toLocaleDateString();
+          const statusClass =
+            record.status === "present" ? "present" : "absent";
+          const statusText =
+            record.status.charAt(0).toUpperCase() + record.status.slice(1);
+
+          html += `<tr>
+            <td>${formattedDate}</td>
+            <td>${record.classname || "N/A"}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>${record.teacherUsername || "System"}</td>
+          </tr>`;
+        });
+
+        html += `</tbody></table>`;
+        historyContainer.innerHTML = html;
+      }
+
+      // initialize chatbot with student role when DOM is ready
+      document.addEventListener("DOMContentLoaded", function () {
+        try {
+          const role = localStorage.getItem("role") || "student";
+          const username = localStorage.getItem("username") || "";
+          Chatbot.init({ role: role, name: username });
+        } catch (e) {
+          console.warn("Chatbot init error", e);
+        }
+      });
+    </script>
+  </body>
+</html>

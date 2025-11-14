@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome - ClassGuard</title>
+    <link rel="stylesheet" href="styles-modern.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 50%,
+          #f093fb 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .welcome-container {
+        text-align: center;
+        color: white;
+        animation: fadeInUp 1s ease;
+      }
+
+      .welcome-container h1 {
+        font-size: 3.5rem;
+        margin: 0 0 1rem 0;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .welcome-container p {
+        font-size: 1.3rem;
+        margin: 0 0 2rem 0;
+        opacity: 0.95;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn-main {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        background: white;
+        color: #667eea;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn-main:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-secondary {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: 2px solid white;
+        cursor: pointer;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px);
+      }
+
+      @media (max-width: 768px) {
+        .welcome-container h1 {
+          font-size: 2.5rem;
+        }
+
+        .welcome-container p {
+          font-size: 1rem;
+        }
+
+        .button-group {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .btn-main,
+        .btn-secondary {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .features {
+        margin-top: 3rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 2rem;
+        animation: fadeInUp 1.2s ease;
+      }
+
+      .feature-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+      }
+
+      .feature-item h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.3rem;
+      }
+
+      .feature-item p {
+        margin: 0;
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="welcome-container">
+      <h1>🎓 ClassGuard</h1>
+      <p>Your Ultimate Solution for Educational Scheduling</p>
+
+      <div class="button-group">
+        <a href="register.html" class="btn-main">📝 Sign Up Now</a>
+        <a href="index.html" class="btn-secondary">🔐 Already Have Account?</a>
+        <a href="about.html" class="btn-secondary">ℹ️ Learn More</a>
+      </div>
+
+      <div class="features">
+        <div class="feature-item">
+          <h3>⚡ Fast</h3>
+          <p>Register in less than 1 minute</p>
+        </div>
+        <div class="feature-item">
+          <h3>📱 Easy</h3>
+          <p>Simple side-by-side forms</p>
+        </div>
+        <div class="feature-item">
+          <h3>🔒 Secure</h3>
+          <p>Your data is always safe</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

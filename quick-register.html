@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Registration - ClassGuard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles-modern.css" />
+    <style>
+      .quick-reg-container {
+        max-width: 900px;
+        margin: 40px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .quick-reg-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .quick-reg-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .quick-reg-card.student {
+        border-top: 4px solid #28a745;
+      }
+
+      .quick-reg-card.teacher {
+        border-top: 4px solid #667eea;
+      }
+
+      .quick-reg-card h2 {
+        margin-bottom: 10px;
+        font-size: 22px;
+      }
+
+      .quick-reg-card .subtitle {
+        color: #666;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+      }
+
+      .reg-benefit {
+        display: flex;
+        align-items: center;
+        margin: 12px 0;
+        color: #555;
+        font-size: 0.95rem;
+      }
+
+      .reg-benefit::before {
+        content: "✓";
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background: #28a745;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 24px;
+        margin-right: 10px;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .quick-reg-card.teacher .reg-benefit::before {
+        background: #667eea;
+      }
+
+      .reg-form {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+
+      .quick-input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+
+      .quick-input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .quick-btn {
+        width: 100%;
+        padding: 12px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        color: white;
+        transition: background 0.3s;
+      }
+
+      .quick-btn.student-btn {
+        background: #28a745;
+      }
+
+      .quick-btn.student-btn:hover {
+        background: #218838;
+      }
+
+      .quick-btn.teacher-btn {
+        background: #667eea;
+      }
+
+      .quick-btn.teacher-btn:hover {
+        background: #5a6fd6;
+      }
+
+      .already-member {
+        margin-top: 12px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .already-member a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      .already-member a:hover {
+        text-decoration: underline;
+      }
+
+      .intro-box {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .intro-box h1 {
+        margin: 0 0 10px 0;
+        font-size: 28px;
+      }
+
+      .intro-box p {
+        margin: 0;
+        opacity: 0.95;
+      }
+
+      @media (max-width: 768px) {
+        .quick-reg-container {
+          grid-template-columns: 1fr;
+        }
+
+        .intro-box {
+          grid-column: 1;
+        }
+      }
+
+      .success-message {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 12px;
+        display: none;
+      }
+
+      .error-message {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 12px;
+        border-radius: 5px;
+        margin-bottom: 12px;
+        display: none;
+      }
+
+      .form-hint-small {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="quick-reg-container">
+        <div class="intro-box">
+          <h1>🚀 Quick Registration</h1>
+          <p>
+            Join ClassGuard in just a few steps. Choose your role and fill in
+            your details.
+          </p>
+        </div>
+
+        <!-- STUDENT REGISTRATION -->
+        <div class="quick-reg-card student">
+          <h2>👨‍🎓 Student Account</h2>
+          <p class="subtitle">For Students</p>
+
+          <div class="reg-benefit">View your timetable</div>
+          <div class="reg-benefit">Track attendance</div>
+          <div class="reg-benefit">Get notifications</div>
+          <div class="reg-benefit">Chat with AI assistant</div>
+
+          <div class="reg-form">
+            <div class="error-message" id="student-error"></div>
+            <div class="success-message" id="student-success">
+              ✅ Registration successful! Redirecting to login...
+            </div>
+
+            <form id="quick-student-form">
+              <input
+                type="text"
+                id="qstudent-name"
+                class="quick-input"
+                placeholder="Full Name"
+                required
+              />
+              <div class="form-hint-small">
+                Your full name as it appears in records
+              </div>
+
+              <input
+                type="text"
+                id="qstudent-username"
+                class="quick-input"
+                placeholder="Username"
+                required
+              />
+              <div class="form-hint-small">
+                Letters, numbers, no spaces (3+ chars)
+              </div>
+
+              <input
+                type="password"
+                id="qstudent-password"
+                class="quick-input"
+                placeholder="Password"
+                required
+              />
+              <div class="form-hint-small">
+                Minimum 3 characters, keep it secure
+              </div>
+
+              <input
+                type="text"
+                id="qstudent-class"
+                class="quick-input"
+                placeholder="Class / Roll (e.g., 10A, BCA X1)"
+                required
+              />
+              <div class="form-hint-small">Your class or roll number</div>
+
+              <button type="submit" class="quick-btn student-btn">
+                ✅ Register as Student
+              </button>
+            </form>
+
+            <div class="already-member">
+              Already have an account? <a href="index.html">Login here</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEACHER REGISTRATION -->
+        <div class="quick-reg-card teacher">
+          <h2>👨‍🏫 Teacher Account</h2>
+          <p class="subtitle">For Teachers</p>
+
+          <div class="reg-benefit">Create class schedules</div>
+          <div class="reg-benefit">Mark student attendance</div>
+          <div class="reg-benefit">Manage classes</div>
+          <div class="reg-benefit">Chat with AI assistant</div>
+
+          <div class="reg-form">
+            <div class="error-message" id="teacher-error"></div>
+            <div class="success-message" id="teacher-success">
+              ✅ Registration successful! Redirecting to login...
+            </div>
+
+            <form id="quick-teacher-form">
+              <input
+                type="text"
+                id="qteacher-name"
+                class="quick-input"
+                placeholder="Full Name"
+                required
+              />
+              <div class="form-hint-small">Your full name</div>
+
+              <input
+                type="text"
+                id="qteacher-username"
+                class="quick-input"
+                placeholder="Username"
+                required
+              />
+              <div class="form-hint-small">
+                Letters, numbers, no spaces (3+ chars)
+              </div>
+
+              <input
+                type="password"
+                id="qteacher-password"
+                class="quick-input"
+                placeholder="Password"
+                required
+              />
+              <div class="form-hint-small">
+                Minimum 3 characters, keep it secure
+              </div>
+
+              <input
+                type="text"
+                id="qteacher-subject"
+                class="quick-input"
+                placeholder="Subject Specialization (e.g., Mathematics)"
+                required
+              />
+              <div class="form-hint-small">Your primary subject</div>
+
+              <button type="submit" class="quick-btn teacher-btn">
+                ✅ Register as Teacher
+              </button>
+            </form>
+
+            <div class="already-member">
+              Already have an account? <a href="index.html">Login here</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Reuse auth functions if available
+      function getStoredStudents() {
+        try {
+          return JSON.parse(localStorage.getItem("studentsRegistered") || "[]");
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveStoredStudents(list) {
+        try {
+          localStorage.setItem("studentsRegistered", JSON.stringify(list));
+        } catch (e) {
+          alert("Error saving data");
+        }
+      }
+
+      function getStoredTeachers() {
+        try {
+          return JSON.parse(localStorage.getItem("teachersRegistered") || "[]");
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveStoredTeachers(list) {
+        try {
+          localStorage.setItem("teachersRegistered", JSON.stringify(list));
+        } catch (e) {
+          alert("Error saving data");
+        }
+      }
+
+      // Student Registration
+      document
+        .getElementById("quick-student-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const errorDiv = document.getElementById("student-error");
+          const successDiv = document.getElementById("student-success");
+          errorDiv.style.display = "none";
+          successDiv.style.display = "none";
+
+          const name = document.getElementById("qstudent-name").value.trim();
+          const username = document
+            .getElementById("qstudent-username")
+            .value.trim();
+          const password = document
+            .getElementById("qstudent-password")
+            .value.trim();
+          const studentClass = document
+            .getElementById("qstudent-class")
+            .value.trim();
+
+          if (!name || !username || !password || !studentClass) {
+            errorDiv.textContent = "❌ Please fill all fields";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          if (username.length < 3) {
+            errorDiv.textContent = "❌ Username must be at least 3 characters";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          if (password.length < 3) {
+            errorDiv.textContent = "❌ Password must be at least 3 characters";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          const students = getStoredStudents();
+          if (students.find((s) => s.username === username)) {
+            errorDiv.textContent =
+              "❌ Username already taken. Try another one.";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          students.push({ name, username, password, class: studentClass });
+          saveStoredStudents(students);
+
+          successDiv.style.display = "block";
+          setTimeout(() => {
+            window.location.href = "student-login.html";
+          }, 1500);
+        });
+
+      // Teacher Registration
+      document
+        .getElementById("quick-teacher-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const errorDiv = document.getElementById("teacher-error");
+          const successDiv = document.getElementById("teacher-success");
+          errorDiv.style.display = "none";
+          successDiv.style.display = "none";
+
+          const name = document.getElementById("qteacher-name").value.trim();
+          const username = document
+            .getElementById("qteacher-username")
+            .value.trim();
+          const password = document
+            .getElementById("qteacher-password")
+            .value.trim();
+          const subject = document
+            .getElementById("qteacher-subject")
+            .value.trim();
+
+          if (!name || !username || !password || !subject) {
+            errorDiv.textContent = "❌ Please fill all fields";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          if (username.length < 3) {
+            errorDiv.textContent = "❌ Username must be at least 3 characters";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          if (password.length < 3) {
+            errorDiv.textContent = "❌ Password must be at least 3 characters";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          const teachers = getStoredTeachers();
+          if (teachers.find((t) => t.username === username)) {
+            errorDiv.textContent =
+              "❌ Username already taken. Try another one.";
+            errorDiv.style.display = "block";
+            return;
+          }
+
+          teachers.push({ name, username, password, subject });
+          saveStoredTeachers(teachers);
+
+          successDiv.style.display = "block";
+          setTimeout(() => {
+            window.location.href = "teacher-login.html";
+          }, 1500);
+        });
+    </script>
+  </body>
+</html>

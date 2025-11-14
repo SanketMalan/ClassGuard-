@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Scheduling - ClassGuard</title>
+    <link rel="stylesheet" href="styles-scheduling.css" />
+    <link rel="stylesheet" href="styles-modern.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-brand">ClassGuard</div>
+      <div class="nav-links">
+        <a href="scheduling.html" class="active">Scheduling</a>
+        <a href="about.html">About</a>
+        <div class="notification-center">
+          <button class="notification-bell" onclick="toggleNotifications()">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge" id="notification-count">0</span>
+          </button>
+          <div class="notification-panel" id="notification-panel">
+            <div class="notification-header">
+              <h3>Notifications</h3>
+              <button onclick="markAllRead()" class="mark-read-btn">
+                Mark all read
+              </button>
+            </div>
+            <div class="notification-list" id="notification-list">
+              <!-- Notifications will be inserted here -->
+            </div>
+          </div>
+        </div>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <h3>Quick Actions</h3>
+          <button onclick="showPanel('classes')" class="action-btn">
+            <i class="fas fa-users"></i> Manage Classes
+          </button>
+          <button onclick="showPanel('teachers')" class="action-btn">
+            <i class="fas fa-chalkboard-teacher"></i> Manage Teachers
+          </button>
+          <button onclick="showPanel('subjects')" class="action-btn">
+            <i class="fas fa-book"></i> Manage Subjects
+          </button>
+          <button onclick="showPanel('rooms')" class="action-btn">
+            <i class="fas fa-door-open"></i> Manage Rooms
+          </button>
+          <button onclick="generateTimetable()" class="generate-btn">
+            <i class="fas fa-magic"></i> Generate Timetable
+          </button>
+          <button onclick="showPanel('attendance')" class="action-btn">
+            <i class="fas fa-clipboard-list"></i> Mark Attendance
+          </button>
+          <button onclick="showPanel('students')" class="action-btn">
+            <i class="fas fa-user-plus"></i> Manage Students
+          </button>
+          <button onclick="showPanel('messaging')" class="action-btn">
+            <i class="fas fa-comments"></i> Send Message
+          </button>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <!-- Classes Panel -->
+        <div id="classes-panel" class="panel">
+          <h2>Manage Classes</h2>
+          <div class="form-section">
+            <form id="class-form">
+              <div class="form-group">
+                <input
+                  type="text"
+                  id="class-name"
+                  placeholder="Class Name (e.g., Class 10A)"
+                />
+                <input
+                  type="number"
+                  id="class-capacity"
+                  placeholder="Class Capacity"
+                />
+                <input
+                  type="number"
+                  id="periods-per-day"
+                  placeholder="Periods per day (e.g., 8)"
+                  min="1"
+                />
+                <input
+                  type="text"
+                  id="preferred-time-slots"
+                  placeholder="Preferred time slots (comma-separated, e.g. 09:00-09:45,10:00-10:45)"
+                />
+                <button type="submit" class="submit-btn">Add Class</button>
+              </div>
+            </form>
+            <div class="list-section">
+              <h3>Existing Classes</h3>
+              <div id="classes-list" class="data-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teachers Panel -->
+        <div id="teachers-panel" class="panel hidden">
+          <h2>Manage Teachers</h2>
+          <div class="form-section">
+            <form id="teacher-form">
+              <div class="form-group">
+                <input
+                  type="text"
+                  id="teacher-name"
+                  placeholder="Teacher Name"
+                />
+                <input
+                  type="text"
+                  id="teacher-subject"
+                  placeholder="Subject Specialization"
+                />
+                <button type="submit" class="submit-btn">Add Teacher</button>
+              </div>
+            </form>
+            <div class="list-section">
+              <h3>Current Teachers</h3>
+              <div id="teachers-list" class="data-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subjects Panel -->
+        <div id="subjects-panel" class="panel hidden">
+          <h2>Manage Subjects</h2>
+          <div class="form-section">
+            <form id="subject-form">
+              <div class="form-group">
+                <input
+                  type="text"
+                  id="subject-name"
+                  placeholder="Subject Name"
+                />
+                <input
+                  type="number"
+                  id="weekly-hours"
+                  placeholder="Weekly Hours"
+                />
+                <button type="submit" class="submit-btn">Add Subject</button>
+              </div>
+            </form>
+            <div class="list-section">
+              <h3>Available Subjects</h3>
+              <div id="subjects-list" class="data-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rooms Panel -->
+        <div id="rooms-panel" class="panel hidden">
+          <h2>Manage Rooms</h2>
+          <div class="form-section">
+            <form id="room-form">
+              <div class="form-group">
+                <input type="text" id="room-number" placeholder="Room Number" />
+                <input
+                  type="number"
+                  id="room-capacity"
+                  placeholder="Room Capacity"
+                />
+                <select id="room-type">
+                  <option value="classroom">Classroom</option>
+                  <option value="lab">Laboratory</option>
+                  <option value="workshop">Workshop</option>
+                </select>
+                <button type="submit" class="submit-btn">Add Room</button>
+              </div>
+            </form>
+            <div class="list-section">
+              <h3>Available Rooms</h3>
+              <div id="rooms-list" class="data-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Generated Timetable View -->
+        <div id="timetable-panel" class="panel hidden">
+          <h2>Generated Timetable</h2>
+          <div class="timetable-controls">
+            <select id="view-selector">
+              <option value="class">Class View</option>
+              <option value="teacher">Teacher View</option>
+              <option value="room">Room View</option>
+            </select>
+            <select id="item-selector">
+              <!-- Will be populated based on view selection -->
+            </select>
+            <button onclick="exportTimetable()" class="export-btn">
+              <i class="fas fa-download"></i> Export
+            </button>
+          </div>
+          <div class="timetable-container">
+            <table id="timetable" class="timetable">
+              <!-- Timetable will be generated here -->
+            </table>
+          </div>
+        </div>
+
+        <!-- Attendance Panel -->
+        <div id="attendance-panel" class="panel hidden">
+          <h2>Mark Attendance</h2>
+          <div class="attendance-container">
+            <div class="attendance-header">
+              <div>
+                <label for="attendance-class">Select Class:</label>
+                <select id="attendance-class">
+                  <option value="">-- Choose a class --</option>
+                </select>
+              </div>
+              <div>
+                <label for="attendance-date">Date:</label>
+                <input type="date" id="attendance-date" />
+              </div>
+              <button onclick="loadClassStudents()">Load Students</button>
+            </div>
+            <div id="attendance-list" class="attendance-list">
+              <!-- Students will be listed here -->
+            </div>
+            <button
+              onclick="saveAttendance()"
+              style="
+                margin-top: 12px;
+                padding: 10px 16px;
+                background: #28a745;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+              "
+            >
+              Save Attendance
+            </button>
+          </div>
+        </div>
+
+        <!-- Student Management Panel -->
+        <div id="students-panel" class="panel hidden">
+          <h2>Manage Students</h2>
+          <div style="display: flex; gap: 20px">
+            <div style="flex: 1">
+              <h3>Add Student to Class</h3>
+              <form
+                id="add-student-form"
+                style="display: flex; flex-direction: column; gap: 12px"
+              >
+                <div>
+                  <label for="student-full-name">Full Name:</label>
+                  <input
+                    type="text"
+                    id="student-full-name"
+                    placeholder="e.g., John Doe"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="student-username">Username:</label>
+                  <input
+                    type="text"
+                    id="student-username"
+                    placeholder="e.g., john_doe"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="student-password">Password:</label>
+                  <input
+                    type="password"
+                    id="student-password"
+                    placeholder="Password"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="student-class">Class:</label>
+                  <select id="student-class" required>
+                    <option value="">-- Select a class --</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  class="submit-btn"
+                  style="
+                    background: #667eea;
+                    color: white;
+                    padding: 10px;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                  "
+                >
+                  Add Student
+                </button>
+              </form>
+            </div>
+
+            <div style="flex: 1">
+              <h3>Students by Class</h3>
+              <div>
+                <label for="view-class">Select Class:</label>
+                <select
+                  id="view-class"
+                  onchange="viewClassStudents()"
+                  style="margin-bottom: 12px"
+                >
+                  <option value="">-- Select a class --</option>
+                </select>
+              </div>
+              <div
+                id="class-students-list"
+                style="
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                  padding: 12px;
+                  max-height: 400px;
+                  overflow-y: auto;
+                "
+              >
+                <!-- Students will be listed here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messaging Panel -->
+        <div id="messaging-panel" class="panel hidden">
+          <h2>Send Message to Students</h2>
+          <div style="margin-bottom: 12px">
+            <img
+              src="assets/images/meeting-planning.svg"
+              alt="Messaging & Scheduling"
+              style="
+                width: 100%;
+                max-width: 600px;
+                height: auto;
+                border-radius: 8px;
+                border: 1px solid #eee;
+              "
+            />
+          </div>
+          <div id="messaging-alert"></div>
+          <div class="messaging-container">
+            <div class="messaging-left">
+              <h3>Select Student</h3>
+              <label for="messaging-class">Select Class:</label>
+              <select
+                id="messaging-class"
+                onchange="loadMessagingStudents()"
+                style="
+                  width: 100%;
+                  padding: 8px;
+                  margin-bottom: 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                "
+              >
+                <option value="">-- Choose a class --</option>
+              </select>
+              <div class="student-list" id="messaging-student-list">
+                <!-- Students will be listed here -->
+              </div>
+
+              <h3 style="margin-top: 20px">Student Contact Info</h3>
+              <div
+                id="student-contact-form"
+                style="
+                  display: none;
+                  background: white;
+                  padding: 12px;
+                  border-radius: 8px;
+                  border: 1px solid #e6e6e6;
+                "
+              >
+                <div style="margin-bottom: 12px">
+                  <label
+                    >Student:
+                    <span
+                      id="contact-student-name"
+                      style="font-weight: 600"
+                    ></span
+                  ></label>
+                </div>
+                <div style="margin-bottom: 12px">
+                  <label for="student-phone-number">Phone Number:</label>
+                  <input
+                    type="tel"
+                    id="student-phone-number"
+                    placeholder="+1234567890"
+                    style="
+                      width: 100%;
+                      padding: 8px;
+                      border: 1px solid #ddd;
+                      border-radius: 6px;
+                    "
+                  />
+                </div>
+                <div style="margin-bottom: 12px">
+                  <label for="student-whatsapp-number"
+                    >WhatsApp Number (optional):</label
+                  >
+                  <input
+                    type="tel"
+                    id="student-whatsapp-number"
+                    placeholder="+1234567890"
+                    style="
+                      width: 100%;
+                      padding: 8px;
+                      border: 1px solid #ddd;
+                      border-radius: 6px;
+                    "
+                  />
+                </div>
+                <button
+                  onclick="saveStudentContact()"
+                  style="
+                    width: 100%;
+                    padding: 8px;
+                    background: #667eea;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                  "
+                >
+                  Save Contact Info
+                </button>
+              </div>
+            </div>
+
+            <div class="messaging-right">
+              <h3>Compose Message</h3>
+              <div id="message-compose-form" style="display: none">
+                <div class="messaging-form">
+                  <div>
+                    <label
+                      >Send to:
+                      <span
+                        id="compose-student-name"
+                        style="font-weight: 600"
+                      ></span
+                    ></label>
+                  </div>
+
+                  <div>
+                    <label for="message-text">Message:</label>
+                    <textarea
+                      id="message-text"
+                      placeholder="Type your message here..."
+                    ></textarea>
+                    <small style="color: #666"
+                      >Character count:
+                      <span id="char-count">0</span>/160</small
+                    >
+                  </div>
+
+                  <button
+                    onclick="sendSMS()"
+                    class="send-sms-btn"
+                    style="width: 100%"
+                  >
+                    <i class="fas fa-sms"></i> Send SMS
+                  </button>
+                  <button
+                    onclick="sendWhatsApp()"
+                    class="send-whatsapp-btn"
+                    style="width: 100%"
+                  >
+                    <i class="fab fa-whatsapp"></i> Send WhatsApp
+                  </button>
+                  <button
+                    onclick="sendSMSToClass()"
+                    class="send-sms-class-btn"
+                    style="
+                      width: 100%;
+                      margin-top: 8px;
+                      background: #f0f4ff;
+                      border: 1px solid #cfe0ff;
+                      color: #1a73e8;
+                    "
+                  >
+                    <i class="fas fa-envelope-open-text"></i> Send to Class
+                    (SMS)
+                  </button>
+                  <button
+                    onclick="sendWhatsAppToClass()"
+                    class="send-whatsapp-class-btn"
+                    style="
+                      width: 100%;
+                      margin-top: 8px;
+                      background: #f0fff4;
+                      border: 1px solid #cfeedd;
+                      color: #1aa85a;
+                    "
+                  >
+                    <i class="fab fa-whatsapp"></i> Send to Class (WhatsApp)
+                  </button>
+                </div>
+
+                <div
+                  id="message-history"
+                  style="margin-top: 20px; display: none"
+                >
+                  <!-- Message history will be shown here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="scheduling-script.js"></script>
+    <script src="notifications.js"></script>
+    <link rel="stylesheet" href="attendance.css" />
+    <script src="attendance.js"></script>
+    <link rel="stylesheet" href="messaging.css" />
+    <script src="messaging.js"></script>
+    <link rel="stylesheet" href="chatbot.css" />
+    <script src="chatbot.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        try {
+          const role = localStorage.getItem("role") || "teacher";
+          const username = localStorage.getItem("username") || "";
+          Chatbot.init({ role: role, name: username });
+        } catch (e) {
+          console.warn("Chatbot init error", e);
+        }
+
+        // Initialize attendance UI
+        initAttendanceUI();
+      });
+
+      function initAttendanceUI() {
+        const classSelect = document.getElementById("attendance-class");
+        const dateInput = document.getElementById("attendance-date");
+
+        // populate classes
+        const classes = Attendance.getAllClasses();
+        classes.forEach((cls) => {
+          const opt = document.createElement("option");
+          opt.value = cls;
+          opt.textContent = cls;
+          classSelect.appendChild(opt);
+        });
+
+        // set today's date
+        const today = new Date().toISOString().split("T")[0];
+        dateInput.value = today;
+
+        // Also populate student management class selects
+        populateClassSelects();
+      }
+
+      let currentAttendanceData = {}; // tracks {studentUsername: 'present'|'absent'}
+
+      function loadClassStudents() {
+        const classname = document.getElementById("attendance-class").value;
+        if (!classname) {
+          alert("Please select a class");
+          return;
+        }
+
+        const students = Attendance.getStudentsInClass(classname);
+        const list = document.getElementById("attendance-list");
+        list.innerHTML = "";
+
+        if (students.length === 0) {
+          list.innerHTML =
+            '<p style="color:#666">No students found in this class.</p>';
+          return;
+        }
+
+        currentAttendanceData = {};
+
+        students.forEach((student) => {
+          const row = document.createElement("div");
+          row.className = "attendance-row";
+
+          const name = document.createElement("span");
+          name.className = "student-name";
+          name.textContent = student.name;
+
+          const username = document.createElement("span");
+          username.className = "student-username";
+          username.textContent = `@${student.username}`;
+
+          const toggle = document.createElement("div");
+          toggle.className = "attendance-toggle";
+
+          const presentBtn = document.createElement("button");
+          presentBtn.textContent = "Present";
+          presentBtn.className = "active";
+          presentBtn.addEventListener("click", function () {
+            currentAttendanceData[student.username] = "present";
+            presentBtn.classList.add("active");
+            absentBtn.classList.remove("active");
+          });
+
+          const absentBtn = document.createElement("button");
+          absentBtn.textContent = "Absent";
+          absentBtn.addEventListener("click", function () {
+            currentAttendanceData[student.username] = "absent";
+            absentBtn.classList.add("active");
+            presentBtn.classList.remove("active");
+          });
+
+          toggle.appendChild(presentBtn);
+          toggle.appendChild(absentBtn);
+
+          row.appendChild(name);
+          row.appendChild(username);
+          row.appendChild(toggle);
+          list.appendChild(row);
+
+          // default to present
+          currentAttendanceData[student.username] = "present";
+        });
+      }
+
+      function saveAttendance() {
+        const classname = document.getElementById("attendance-class").value;
+        const date = document.getElementById("attendance-date").value;
+        const username = localStorage.getItem("username") || "teacher";
+
+        if (!classname) {
+          alert("Please select a class");
+          return;
+        }
+
+        if (!date) {
+          alert("Please select a date");
+          return;
+        }
+
+        Object.entries(currentAttendanceData).forEach(
+          ([studentUsername, status]) => {
+            Attendance.markAttendance(
+              studentUsername,
+              date,
+              status,
+              classname,
+              username
+            );
+          }
+        );
+
+        alert("Attendance saved successfully!");
+      }
+
+      // Student Management Functions
+      function populateClassSelects() {
+        const classes = Attendance.getAllClasses();
+        const studentClassSelect = document.getElementById("student-class");
+        const viewClassSelect = document.getElementById("view-class");
+
+        // Clear existing options except the first one
+        [studentClassSelect, viewClassSelect].forEach((select) => {
+          while (select.options.length > 1) {
+            select.remove(1);
+          }
+          classes.forEach((cls) => {
+            const opt = document.createElement("option");
+            opt.value = cls;
+            opt.textContent = cls;
+            select.appendChild(opt);
+          });
+        });
+      }
+
+      function addStudentToClass() {
+        const name = document.getElementById("student-full-name").value.trim();
+        const username = document
+          .getElementById("student-username")
+          .value.trim();
+        const password = document.getElementById("student-password").value;
+        const classname = document.getElementById("student-class").value;
+
+        if (!name || !username || !password || !classname) {
+          alert("Please fill all fields");
+          return;
+        }
+
+        const students = JSON.parse(
+          localStorage.getItem("studentsRegistered") || "[]"
+        );
+
+        // Check if username already exists
+        if (students.find((s) => s.username === username)) {
+          alert("Username already exists");
+          return;
+        }
+
+        // Add new student
+        students.push({
+          name,
+          username,
+          password,
+          class: classname,
+        });
+
+        localStorage.setItem("studentsRegistered", JSON.stringify(students));
+
+        alert(`Student ${name} added to ${classname} successfully!`);
+
+        // Clear form
+        document.getElementById("add-student-form").reset();
+        document.getElementById("student-full-name").focus();
+
+        // Refresh the class students view
+        const viewClassSelect = document.getElementById("view-class");
+        if (viewClassSelect.value) {
+          viewClassStudents();
+        }
+      }
+
+      function viewClassStudents() {
+        const classname = document.getElementById("view-class").value;
+        const list = document.getElementById("class-students-list");
+
+        if (!classname) {
+          list.innerHTML =
+            '<p style="color:#666">Select a class to view students.</p>';
+          return;
+        }
+
+        const students = Attendance.getStudentsInClass(classname);
+
+        if (students.length === 0) {
+          list.innerHTML =
+            '<p style="color:#666">No students in this class.</p>';
+          return;
+        }
+
+        let html = '<table style="width:100%; border-collapse: collapse;">';
+        html +=
+          '<thead><tr style="background:#f0f0f0;"><th style="padding:8px; border-bottom:1px solid #ddd; text-align:left;">Name</th><th style="padding:8px; border-bottom:1px solid #ddd; text-align:left;">Username</th><th style="padding:8px; border-bottom:1px solid #ddd; text-align:center;">Action</th></tr></thead>';
+        html += "<tbody>";
+
+        students.forEach((student) => {
+          html += `<tr style="border-bottom:1px solid #e6e6e6;">
+            <td style="padding:8px;">${student.name}</td>
+            <td style="padding:8px;">@${student.username}</td>
+            <td style="padding:8px; text-align:center;">
+              <button onclick="removeStudent('${student.username}')" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.85rem;">
+                Remove
+              </button>
+            </td>
+          </tr>`;
+        });
+
+        html += "</tbody></table>";
+        list.innerHTML = html;
+      }
+
+      function removeStudent(username) {
+        if (!confirm(`Are you sure you want to remove this student?`)) {
+          return;
+        }
+
+        const students = JSON.parse(
+          localStorage.getItem("studentsRegistered") || "[]"
+        );
+        const filtered = students.filter((s) => s.username !== username);
+
+        localStorage.setItem("studentsRegistered", JSON.stringify(filtered));
+
+        alert("Student removed successfully!");
+
+        // Refresh the current view
+        const viewClassSelect = document.getElementById("view-class");
+        if (viewClassSelect.value) {
+          viewClassStudents();
+        }
+      }
+
+      // Attach form submission
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("add-student-form");
+        if (form) {
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            addStudentToClass();
+          });
+        }
+      });
+
+      // ===== MESSAGING FUNCTIONS =====
+      let currentSelectedStudent = null;
+
+      function loadMessagingStudents() {
+        const classname = document.getElementById("messaging-class").value;
+        const list = document.getElementById("messaging-student-list");
+
+        if (!classname) {
+          list.innerHTML =
+            '<p style="color:#666">Select a class to view students.</p>';
+          return;
+        }
+
+        const students = Attendance.getStudentsInClass(classname);
+
+        if (students.length === 0) {
+          list.innerHTML =
+            '<p style="color:#666">No students in this class.</p>';
+          return;
+        }
+
+        list.innerHTML = "";
+        students.forEach((student) => {
+          const item = document.createElement("div");
+          item.className = "student-item";
+          item.onclick = function () {
+            selectStudentForMessaging(student);
+          };
+
+          const contact = Messaging.getStudentContact(student.username);
+          let phoneInfo = contact ? contact.phoneNumber : "No contact info";
+
+          item.innerHTML = `
+            <div class="student-item-name">${student.name}</div>
+            <div class="student-item-username">@${student.username}</div>
+            <div class="student-item-phone">📱 ${phoneInfo}</div>
+          `;
+
+          list.appendChild(item);
+        });
+      }
+
+      function selectStudentForMessaging(student) {
+        currentSelectedStudent = student;
+
+        // Update UI
+        document.querySelectorAll(".student-item").forEach((el) => {
+          el.classList.remove("selected");
+        });
+        event.currentTarget.classList.add("selected");
+
+        // Show contact form
+        document.getElementById("student-contact-form").style.display = "block";
+        document.getElementById("contact-student-name").textContent =
+          student.name;
+        document.getElementById("message-compose-form").style.display = "block";
+        document.getElementById("compose-student-name").textContent =
+          student.name;
+
+        // Load existing contact info if any
+        const contact = Messaging.getStudentContact(student.username);
+        if (contact) {
+          document.getElementById("student-phone-number").value =
+            contact.phoneNumber || "";
+          document.getElementById("student-whatsapp-number").value =
+            contact.whatsappNumber || "";
+        } else {
+          document.getElementById("student-phone-number").value = "";
+          document.getElementById("student-whatsapp-number").value = "";
+        }
+
+        // Load message history
+        displayMessageHistory(student.username);
+      }
+
+      function saveStudentContact() {
+        if (!currentSelectedStudent) {
+          showMessagingAlert("Please select a student first", "error");
+          return;
+        }
+
+        const phone = document
+          .getElementById("student-phone-number")
+          .value.trim();
+        const whatsapp = document
+          .getElementById("student-whatsapp-number")
+          .value.trim();
+
+        if (!phone) {
+          showMessagingAlert("Please enter at least a phone number", "error");
+          return;
+        }
+
+        Messaging.addStudentContact(
+          currentSelectedStudent.username,
+          phone,
+          whatsapp || phone
+        );
+        showMessagingAlert("Contact info saved successfully!", "success");
+
+        // Refresh student list
+        loadMessagingStudents();
+      }
+
+      function sendSMS() {
+        if (!currentSelectedStudent) {
+          showMessagingAlert("Please select a student first", "error");
+          return;
+        }
+
+        const message = document.getElementById("message-text").value.trim();
+        if (!message) {
+          showMessagingAlert("Please type a message", "error");
+          return;
+        }
+
+        const contact = Messaging.getStudentContact(
+          currentSelectedStudent.username
+        );
+        if (!contact || !contact.phoneNumber) {
+          showMessagingAlert(
+            "No phone number found. Please save contact info first.",
+            "error"
+          );
+          return;
+        }
+
+        // Send SMS
+        Messaging.sendSMS(
+          currentSelectedStudent.username,
+          message,
+          "School"
+        ).then((result) => {
+          const ok = (r) => {
+            if (!r) return false;
+            if (r.success === true) return true;
+            const s = (
+              r.status ||
+              (r.providerResponse && r.providerResponse.status) ||
+              ""
+            ).toLowerCase();
+            return [
+              "delivered",
+              "queued",
+              "accepted",
+              "sent",
+              "pending",
+            ].includes(s);
+          };
+
+          if (ok(result)) {
+            showMessagingAlert(
+              "SMS request accepted for " + contact.phoneNumber + ".",
+              "success"
+            );
+            document.getElementById("message-text").value = "";
+            document.getElementById("char-count").textContent = "0";
+            displayMessageHistory(currentSelectedStudent.username);
+          } else {
+            showMessagingAlert(
+              "Failed to send SMS: " + (result.error || "Unknown error"),
+              "error"
+            );
+          }
+        });
+      }
+
+      function sendWhatsApp() {
+        if (!currentSelectedStudent) {
+          showMessagingAlert("Please select a student first", "error");
+          return;
+        }
+
+        const message = document.getElementById("message-text").value.trim();
+        if (!message) {
+          showMessagingAlert("Please type a message", "error");
+          return;
+        }
+
+        const contact = Messaging.getStudentContact(
+          currentSelectedStudent.username
+        );
+        if (!contact || !contact.whatsappNumber) {
+          showMessagingAlert(
+            "No WhatsApp number found. Please save contact info first.",
+            "error"
+          );
+          return;
+        }
+
+        // Send WhatsApp
+        Messaging.sendWhatsApp(
+          currentSelectedStudent.username,
+          message,
+          "School"
+        ).then((result) => {
+          const ok = (r) => {
+            if (!r) return false;
+            if (r.success === true) return true;
+            const s = (
+              r.status ||
+              (r.providerResponse && r.providerResponse.status) ||
+              ""
+            ).toLowerCase();
+            return [
+              "delivered",
+              "queued",
+              "accepted",
+              "sent",
+              "pending",
+            ].includes(s);
+          };
+
+          if (ok(result)) {
+            showMessagingAlert(
+              "WhatsApp request accepted for " + contact.whatsappNumber + ".",
+              "success"
+            );
+            document.getElementById("message-text").value = "";
+            document.getElementById("char-count").textContent = "0";
+            displayMessageHistory(currentSelectedStudent.username);
+          } else {
+            showMessagingAlert(
+              "Failed to send WhatsApp: " + (result.error || "Unknown error"),
+              "error"
+            );
+          }
+        });
+      }
+
+      // Send SMS to all students in selected class
+      async function sendSMSToClass() {
+        const cls = document.getElementById("messaging-class").value;
+        const message = document.getElementById("message-text").value.trim();
+        if (!cls) {
+          showMessagingAlert("Select a class first", "error");
+          return;
+        }
+        if (!message) {
+          showMessagingAlert("Enter a message", "error");
+          return;
+        }
+        try {
+          const res = await Messaging.sendBulkSMS(cls, message, "School");
+          if (res && res.success) {
+            const sent = (res.results || []).filter((r) => r.success).length;
+            const failed = (res.results || []).filter((r) => !r.success).length;
+            showMessagingAlert(
+              `Bulk SMS: request accepted. Sent: ${sent}, Failed: ${failed}`,
+              "success"
+            );
+            if (currentSelectedStudent)
+              displayMessageHistory(currentSelectedStudent.username);
+          } else {
+            showMessagingAlert(
+              "Bulk SMS failed: " +
+                (res && res.error ? res.error : JSON.stringify(res)),
+              "error"
+            );
+          }
+        } catch (err) {
+          showMessagingAlert("Bulk SMS error: " + err.message, "error");
+        }
+      }
+
+      // Send WhatsApp to all students in selected class
+      async function sendWhatsAppToClass() {
+        const cls = document.getElementById("messaging-class").value;
+        const message = document.getElementById("message-text").value.trim();
+        if (!cls) {
+          showMessagingAlert("Select a class first", "error");
+          return;
+        }
+        if (!message) {
+          showMessagingAlert("Enter a message", "error");
+          return;
+        }
+        try {
+          const res = await Messaging.sendBulkWhatsApp(cls, message, "School");
+          if (res && res.success) {
+            const sent = (res.results || []).filter((r) => r.success).length;
+            const failed = (res.results || []).filter((r) => !r.success).length;
+            showMessagingAlert(
+              `Bulk WhatsApp: request accepted. Sent: ${sent}, Failed: ${failed}`,
+              "success"
+            );
+            if (currentSelectedStudent)
+              displayMessageHistory(currentSelectedStudent.username);
+          } else {
+            showMessagingAlert(
+              "Bulk WhatsApp failed: " +
+                (res && res.error ? res.error : JSON.stringify(res)),
+              "error"
+            );
+          }
+        } catch (err) {
+          showMessagingAlert("Bulk WhatsApp error: " + err.message, "error");
+        }
+      }
+
+      function displayMessageHistory(studentUsername) {
+        const history = Messaging.getMessageHistory(studentUsername);
+        const historyContainer = document.getElementById("message-history");
+
+        if (history.length === 0) {
+          historyContainer.style.display = "none";
+          return;
+        }
+
+        historyContainer.style.display = "block";
+        let html = '<h4>Message History</h4><div class="message-history">';
+
+        history.reverse().forEach((msg) => {
+          const date = new Date(msg.sentAt);
+          const timeStr = date.toLocaleString();
+          const typeClass = msg.type === "sms" ? "sms" : "whatsapp";
+          const statusClass = msg.status;
+
+          html += `
+            <div class="message-item">
+              <div class="message-to">${msg.type.toUpperCase()} to ${
+            msg.toPhone
+          }</div>
+              <div class="message-time">${timeStr}</div>
+              <div class="message-content">${msg.message}</div>
+              <span class="message-type ${typeClass}">${msg.type.toUpperCase()}</span>
+              <span class="message-status ${statusClass}">${msg.status.toUpperCase()}</span>
+            </div>
+          `;
+        });
+
+        html += "</div>";
+        historyContainer.innerHTML = html;
+      }
+
+      function showMessagingAlert(message, type) {
+        const alert = document.getElementById("messaging-alert");
+        alert.innerHTML = `<div class="messaging-alert ${type}">${message}</div>`;
+        setTimeout(() => {
+          alert.innerHTML = "";
+        }, 4000);
+      }
+
+      // Character count for message
+      document.addEventListener("DOMContentLoaded", function () {
+        const messageText = document.getElementById("message-text");
+        if (messageText) {
+          messageText.addEventListener("input", function () {
+            document.getElementById("char-count").textContent =
+              this.value.length;
+          });
+        }
+
+        // Populate messaging class select
+        const messagingClass = document.getElementById("messaging-class");
+        if (messagingClass) {
+          const classes = Attendance.getAllClasses();
+          classes.forEach((cls) => {
+            const opt = document.createElement("option");
+            opt.value = cls;
+            opt.textContent = cls;
+            messagingClass.appendChild(opt);
+          });
+        }
+      });
+    </script>
+
+    <style>
+      /* Toast Notification Styles */
+      .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: white;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        min-width: 300px;
+      }
+
+      .toast-notification.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast-title {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.25rem;
+      }
+
+      .toast-message {
+        color: #666;
+        font-size: 0.9rem;
+      }
+    </style>
+  </body>
+</html>

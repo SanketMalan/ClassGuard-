@@ -1,0 +1,248 @@
+/* messaging.css */
+
+.messaging-container {
+  display: flex;
+  gap: 20px;
+  padding: 0;
+}
+
+.messaging-left,
+.messaging-right {
+  flex: 1;
+}
+
+.messaging-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e6e6e6;
+}
+
+.messaging-form label {
+  font-weight: 600;
+  color: #333;
+}
+
+.messaging-form input,
+.messaging-form select,
+.messaging-form textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.messaging-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.messaging-form button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.messaging-form .send-sms-btn {
+  background: #007bff;
+  color: white;
+}
+
+.messaging-form .send-sms-btn:hover {
+  background: #0056b3;
+}
+
+.messaging-form .send-whatsapp-btn {
+  background: #25d366;
+  color: white;
+}
+
+.messaging-form .send-whatsapp-btn:hover {
+  background: #1eaa4f;
+}
+
+.messaging-alert {
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.messaging-alert.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.messaging-alert.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.messaging-alert.info {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.student-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #f9f9f9;
+  transition: all 0.2s;
+}
+
+.student-item:hover {
+  background: #f0f0f0;
+  border-color: #667eea;
+}
+
+.student-item.selected {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.student-item-name {
+  font-weight: 600;
+}
+
+.student-item-username {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.student-item-phone {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.message-history {
+  background: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.message-history h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.message-item {
+  padding: 10px;
+  border-bottom: 1px solid #e6e6e6;
+  font-size: 0.9rem;
+}
+
+.message-item:last-child {
+  border-bottom: none;
+}
+
+.message-to {
+  font-weight: 600;
+  color: #333;
+}
+
+.message-time {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.message-content {
+  margin-top: 4px;
+  padding: 8px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+.message-type {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.message-type.sms {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.message-type.whatsapp {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.message-status {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.message-status.delivered {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.message-status.failed {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.message-status.pending {
+  background: #fff3cd;
+  color: #664d03;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  background: white;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid #e6e6e6;
+}
+
+.stat-box-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.stat-box-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}

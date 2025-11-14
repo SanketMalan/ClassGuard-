@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Registration - Timetable Management PRO</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles-modern.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="login-box">
+        <h1>📝 Register as Student</h1>
+        <p style="color: #666; margin-bottom: 12px; font-size: 0.9rem">
+          Create your student account and get started with ClassGuard
+        </p>
+        <form id="student-register-form">
+          <div class="input-group">
+            <label for="s-name">Full Name</label>
+            <input id="s-name" type="text" required />
+          </div>
+          <div class="input-group">
+            <label for="s-username">Username</label>
+            <input id="s-username" type="text" required />
+          </div>
+          <div class="input-group">
+            <label for="s-password">Password</label>
+            <input id="s-password" type="password" required />
+          </div>
+          <div class="input-group">
+            <label for="s-class">Class / Roll</label>
+            <input
+              id="s-class"
+              type="text"
+              placeholder="e.g., Class 10A"
+              required
+            />
+          </div>
+          <button
+            type="button"
+            class="login-btn"
+            onclick="window.location.href='register.html'"
+          >
+            ✅ Register as Student
+          </button>
+        </form>
+        <p style="margin-top: 12px; text-align: center">
+          Already registered? <a href="student-login.html">Login as Student</a>
+        </p>
+        <p
+          style="
+            margin-top: 8px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+          "
+        >
+          👨‍🏫 Are you a Teacher?
+          <a href="register.html" style="color: #667eea; font-weight: bold"
+            >Register as Teacher</a
+          >
+        </p>
+        <p style="margin-top: 8px; text-align: center">
+          ⚡
+          <a href="register.html" style="color: #ff6b6b; font-weight: bold"
+            >Try Quick Register</a
+          >
+        </p>
+        <p style="margin-top: 8px; text-align: center">
+          <a href="choose-login.html">← Back</a>
+        </p>
+      </div>
+    </div>
+    <script src="student-auth.js"></script>
+  </body>
+</html>
